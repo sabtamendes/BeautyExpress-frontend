@@ -1,11 +1,9 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./assets/styles/GlobalStyles";
 import { useState } from "react";
 import UserContext from "./contexts/UserContext";
 import SignIn from "./components/SignIn/SignIn";
 import SignUp from "./components/SignUp/SignUp";
-
 
 function App() {
   const [user, setUser] = useState(undefined);
