@@ -1,23 +1,75 @@
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { postSignIn } from "../../services/Services";
+import UserContext from "../../contexts/UserContext";
 
-export default function SignIn(){
-    return(
+export default function SignIn() {
+
+    const [form, setForm] = useState({ email: "", password: "" });
+
+    const navigate = useNavigate();
+
+    const { setUser } = useContext(UserContext);
+
+    function handleForm(e) {
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const body = { ...form };
+
+        postSignIn(body)
+            .then(res => {
+                setUser(res.data);
+                navigate("home");
+            })
+
+            .catch(err => {
+                console.error(err);
+
+            });
+        console.log(form)
+    }
+    return (
         <Container >
-            <Title>Welcome Back</Title>
-            <Subtitle>Welcome Back! Please Enter Your Details.</Subtitle>
-            <Form>
+
+            <Title>Beauty Express</Title>
+
+            <Subtitle>Porque beleza, faz parte do jogo!</Subtitle>
+
+            <Form onSubmit={handleSubmit}>
                 <label>Email</label>
-                <input placeholder="Insira o Email" />
+
+                <input
+                    name="email"
+                    value={form.email}
+                    onChange={handleForm}
+                    type="text"
+                    placeholder="Insira o Email"
+                    required
+                />
+
+
                 <label>Password</label>
-                <input placeholder="Insira a Senha"/>
-                <button>Entrar</button>
 
-                <StyleLink to={"/cadastro"}><span>Ainda não tem conta?</span> <i>Cadastre-se!</i> </StyleLink>
+                <input
+                    name="password"
+                    value={form.password}
+                    onChange={handleForm}
+                    type="number"
+                    placeholder="Insira a Senha"
+                    required
+                />
+                <button type="submit">Entrar</button>
 
+                <StyleLink to={"/cadastro"}>
+                    <span>Ainda não tem conta?</span> <i>Cadastre-se!</i>
+                </StyleLink>
             </Form>
-            
-
 
         </Container >
     )
@@ -29,13 +81,20 @@ background-color: #FFFFFFF;
 padding: 15%;
 `
 const Title = styled.h1`
-font-size: 28px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size: 32px;
 color: #171F1E;
 margin-bottom: 15px;
 `
 const Subtitle = styled.h6`
-font-size: 15px;
-color: #989F9D;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size: 13px;
+color: #F4BD90;
+font-weight: 600;
 `
 const Form = styled.form`
 display:flex;
