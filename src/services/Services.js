@@ -1,4 +1,4 @@
-import BASE_URL from "../constants/urls";
+import { BASE_URL } from "../constants/urls";
 
 import axios from "axios";
 
