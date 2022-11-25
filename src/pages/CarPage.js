@@ -6,10 +6,11 @@ import {
   btnColor,
   priceLabel,
   secondaryText,
+  labelColor,
 } from "../constants/colors";
 import { Link } from "react-router-dom";
-import {estaLogado} from '../constants/auth.js'
-import axios from 'axios'
+import { estaLogado } from "../constants/auth.js";
+import axios from "axios";
 import { BASE_URL } from "../constants/urls.js";
 
 export default function CarPage() {
@@ -35,35 +36,38 @@ export default function CarPage() {
     localStorage.setItem("cart", JSON.stringify(newCar));
     calculetTotRequest();
 
-    if(estaLogado) {
-      console.log('estou logado')
+    if (estaLogado) {
+      console.log("estou logado");
       try {
-          const user = JSON.parse(localStorage.getItem('user'))
-          console.log('user =', user)
-          const iduser = user._id
-          const dia = Intl.NumberFormat({minimumIntegerDigits: 2}).format( new Date().getDate())
-          const mes =  Intl.NumberFormat({minimumIntegerDigits: 2}).format(new Date().getMonth() + 1)
-          await axios.post(`${BASE_URL}/sales-order`, {
-              iduser,
-              date: `${dia}/${ mes }/${new Date().getFullYear()}`,
-              paymentType: 'n',
-              status: 'P',
-              productsList: newCar.map( (c) => { return {
-                                                                          idProduct: c._id,
-                                                                          quantity: c.quantity,
-                                                                          valorProduto: c.unitaryValue
-                                                                  }
-                                                              })
-              // paymentType: '',
-              // status: 'P'
-          })
+        const user = JSON.parse(localStorage.getItem("user"));
+        console.log("user =", user);
+        const iduser = user._id;
+        const dia = Intl.NumberFormat({ minimumIntegerDigits: 2 }).format(
+          new Date().getDate()
+        );
+        const mes = Intl.NumberFormat({ minimumIntegerDigits: 2 }).format(
+          new Date().getMonth() + 1
+        );
+        await axios.post(`${BASE_URL}/sales-order`, {
+          iduser,
+          date: `${dia}/${mes}/${new Date().getFullYear()}`,
+          paymentType: "n",
+          status: "P",
+          productsList: newCar.map((c) => {
+            return {
+              idProduct: c._id,
+              quantity: c.quantity,
+              valorProduto: c.unitaryValue,
+            };
+          }),
+          // paymentType: '',
+          // status: 'P'
+        });
       } catch (error) {
-          console.error(error)
-          alert(error) 
-          
+        console.error(error);
+        alert(error);
       }
-      
-  }
+    }
   }
 
   function calculetTotRequest() {
@@ -141,6 +145,9 @@ export default function CarPage() {
             </h2>
           </ItenDetail>
         </DetailOfBuy>
+        <ContainerFoot>
+          <ContainerButton>Finalizar compra</ContainerButton>
+        </ContainerFoot>
       </Container>
     </>
   );
@@ -164,7 +171,7 @@ const Top = styled.div`
   justify-content: space-between;
   align-items: center;
   ion-icon {
-    color: ${secondaryText};    
+    color: ${secondaryText};
   }
   p {
     font-size: 20px;
@@ -251,4 +258,19 @@ const ItenDetail = styled.div`
     font-size: 18px;
     color: ${priceLabel};
   }
+`;
+
+const ContainerFoot = styled.div`
+  margin-top: 20px;
+`;
+
+const ContainerButton = styled.button`
+  letter-spacing: 1px;
+  font-size: 16px;
+  width: 100%;
+  background-color: ${btnColor};
+  color: ${labelColor};
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
 `;
