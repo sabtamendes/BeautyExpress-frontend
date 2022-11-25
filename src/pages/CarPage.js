@@ -54,6 +54,7 @@ export default function CarPage() {
           paymentType: "n",
           status: "P",
           productsList: newCar.map((c) => {
+            console.log("c._id", c._id);
             return {
               idProduct: c._id,
               quantity: c.quantity,
