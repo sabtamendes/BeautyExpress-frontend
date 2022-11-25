@@ -53,6 +53,37 @@ export default function Products() {
     }
   }
 
+  function addCar(product) {
+    const car = JSON.parse(localStorage.getItem("cart"));
+    let carUpdate = [];
+
+    if (car === null) {
+      carUpdate = [...carUpdate, { ...product, quantity: 1 }];
+    } else {
+      carUpdate = [...car];
+      const exitsCar = car.filter((c) => c._id === product._id).length > 0;
+
+      if (exitsCar) {
+        carUpdate = car.map((p) => {
+          if (p._id === product._id) {
+            if (product.stock >= p.quantity + 1) {
+              console.log("adicionei mais 1");
+              return { ...p, quantity: p.quantity + 1 };
+            } else {
+              return p;
+            }
+          } else {
+            return p;
+          }
+        });
+      } else {
+        carUpdate = [...carUpdate, { ...product, quantity: 1 }];
+      }
+    }
+
+    localStorage.setItem("cart", JSON.stringify(carUpdate));
+  }
+
   return (
     <>
       <Container>
@@ -110,6 +141,11 @@ export default function Products() {
                       p.stock !== 0 && (
                         <IconAddCar>
                           <ion-icon name="cart" size="large"></ion-icon>
+                          <ion-icon
+                            name="cart"
+                            size="large"
+                            onClick={() => addCar(p)}
+                          ></ion-icon>
                           <span>+</span>
                         </IconAddCar>
                       )
