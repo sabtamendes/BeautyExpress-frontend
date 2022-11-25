@@ -25,7 +25,7 @@ export default function SignIn() {
         postSignIn(body)
             .then(res => {
                 setUser(res.data);
-                navigate("home");
+                navigate("/home");
             })
 
             .catch(err => {
@@ -67,7 +67,7 @@ export default function SignIn() {
                 <button type="submit">Entrar</button>
 
                 <StyleLink to={"/cadastro"}>
-                    <span>Ainda não tem conta?</span> <i>Cadastre-se!</i>
+                    <span>Não tem conta? </span> <i>Cadastre-se!</i>
                 </StyleLink>
             </Form>
 
@@ -131,8 +131,10 @@ input{
 `
 const StyleLink = styled(Link)`
 text-decoration: none;
-margin-top: 10vh;
+margin-top: 8vh;
 font-size: 18px;
+display: flex;
+justify-content:center;
 span{
     color: #989F9D;
 }
