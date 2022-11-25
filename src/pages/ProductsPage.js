@@ -10,6 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { BASE_URL } from "../constants/urls.js";
 import axios from "axios";
+import { Link } from "react-router-dom"
 
 export default function Products() {
   const [listProducts, setListProducts] = useState([]);
@@ -94,7 +95,7 @@ export default function Products() {
             <ion-icon name="search-outline" size="large"></ion-icon>
           </IconSearch>
 
-          <input type="text" />
+          <input type="text" onChange={(e) => showProducts(null, e.target.value) }/>
         </SearchProducts>
 
         <Categorys>
@@ -140,7 +141,6 @@ export default function Products() {
                       // se o estoque for verdadeiro, o javascript não executa o que está após o &&; caso contrário, executa
                       p.stock !== 0 && (
                         <IconAddCar>
-                          <ion-icon name="cart" size="large"></ion-icon>
                           <ion-icon
                             name="cart"
                             size="large"
@@ -158,20 +158,20 @@ export default function Products() {
         </ContainerProducts>
       </Container>
       <ContainerFoot>
-        <ItemFood show={true}>
+        <ItemFoot to="/cart" show={true}>
           <ion-icon name="cart" size="large"></ion-icon>
           <p>Carrinho</p>
-        </ItemFood>
+        </ItemFoot>
 
-        <ItemFood show={false}>
+        <ItemFoot show={false}>
           <ion-icon name="home" size="large"></ion-icon>
           <p>Home</p>
-        </ItemFood>
+        </ItemFoot>
 
-        <ItemFood show={true}>
+        <ItemFoot to="/login" show={true}>
           <ion-icon name="person" size="large"></ion-icon>
           <p>Login</p>
-        </ItemFood>
+        </ItemFoot>
       </ContainerFoot>
     </>
   );
@@ -324,11 +324,12 @@ const ContainerFoot = styled.div`
   justify-content: space-between;
 `;
 
-const ItemFood = styled.div`
+const ItemFoot = styled(Link)`
   display: ${(props) => (props.show ? "flex" : "none")};
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
   p {
     font-size: 12px;
     color: ${secondaryText};

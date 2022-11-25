@@ -16,7 +16,7 @@ function App() {
         <GlobalStyle />
         <Routes>
           <Route path="/" element={<ProductsPage />} />
-          {/* <Route path="/cart" element={<CarPage />}></Route> */}
+          <Route path="/cart" element={<CarPage />}></Route>
           <Route path="/login" element={<SignIn />} />
           <Route path="/cadastro" element={<SignUp />} />
         </Routes>
