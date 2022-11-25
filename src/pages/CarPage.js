@@ -8,6 +8,9 @@ import {
   secondaryText,
 } from "../constants/colors";
 import { Link } from "react-router-dom";
+import {estaLogado} from '../constants/auth.js'
+import axios from 'axios'
+import { BASE_URL } from "../constants/urls.js";
 
 export default function CarPage() {
   const [car, setCar] = useState(
@@ -19,7 +22,7 @@ export default function CarPage() {
     calculetTotRequest();
   });
 
-  function addOrRemoveOfCar(indexProduct, quantity) {
+  async function addOrRemoveOfCar(indexProduct, quantity) {
     let newCar = [...car];
     const newQuantify = newCar[indexProduct].quantity + quantity;
 
@@ -31,6 +34,36 @@ export default function CarPage() {
     setCar(newCar);
     localStorage.setItem("cart", JSON.stringify(newCar));
     calculetTotRequest();
+
+    if(estaLogado) {
+      console.log('estou logado')
+      try {
+          const user = JSON.parse(localStorage.getItem('user'))
+          console.log('user =', user)
+          const iduser = user._id
+          const dia = Intl.NumberFormat({minimumIntegerDigits: 2}).format( new Date().getDate())
+          const mes =  Intl.NumberFormat({minimumIntegerDigits: 2}).format(new Date().getMonth() + 1)
+          await axios.post(`${BASE_URL}/sales-order`, {
+              iduser,
+              date: `${dia}/${ mes }/${new Date().getFullYear()}`,
+              paymentType: 'n',
+              status: 'P',
+              productsList: newCar.map( (c) => { return {
+                                                                          idProduct: c._id,
+                                                                          quantity: c.quantity,
+                                                                          valorProduto: c.unitaryValue
+                                                                  }
+                                                              })
+              // paymentType: '',
+              // status: 'P'
+          })
+      } catch (error) {
+          console.error(error)
+          alert(error) 
+          
+      }
+      
+  }
   }
 
   function calculetTotRequest() {

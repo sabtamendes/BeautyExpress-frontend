@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { BASE_URL } from "../constants/urls.js";
 import axios from "axios";
 import { Link } from "react-router-dom"
+import {estaLogado} from '../constants/auth.js'
 
 export default function Products() {
   const [listProducts, setListProducts] = useState([]);
@@ -54,7 +55,10 @@ export default function Products() {
     }
   }
 
-  function addCar(product) {
+  async function addCar(product) {
+
+    //Para obter o carrinho atualizado , basta pegar no localStorage da seguinte forma: JSON.parse(localStorage.getItem('cart'))   
+    //Para obter o token e os dados do usuário, basta fazer da mesma forma acima 
     const car = JSON.parse(localStorage.getItem("cart"));
     let carUpdate = [];
 
@@ -81,6 +85,37 @@ export default function Products() {
         carUpdate = [...carUpdate, { ...product, quantity: 1 }];
       }
     }
+
+    
+    if(estaLogado) {
+      console.log('estou logado')
+      try {
+          const user = JSON.parse(localStorage.getItem('user'))
+          console.log('user =', user)
+          const iduser = user._id
+          const dia = Intl.NumberFormat({minimumIntegerDigits: 2}).format( new Date().getDate())
+          const mes =  Intl.NumberFormat({minimumIntegerDigits: 2}).format(new Date().getMonth() + 1)
+          await axios.post(`${BASE_URL}/sales-order`, {
+              iduser,
+              date: `${dia}/${ mes }/${new Date().getFullYear()}`,
+              paymentType: 'n',
+              status: 'P',
+              productsList: carUpdate.map( (c) => { return {
+                                                                          idProduct: c._id,
+                                                                          quantity: c.quantity,
+                                                                          valorProduto: c.unitaryValue
+                                                                  }
+                                                              })
+              
+          })
+      } catch (error) {
+          console.error(error)
+          alert(error) 
+          
+      }
+      
+  }
+
 
     localStorage.setItem("cart", JSON.stringify(carUpdate));
   }
