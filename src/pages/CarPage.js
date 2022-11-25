@@ -131,7 +131,7 @@ const Top = styled.div`
   justify-content: space-between;
   align-items: center;
   ion-icon {
-    color: ${secondaryText};
+    color: ${secondaryText};    
   }
   p {
     font-size: 20px;
@@ -196,7 +196,7 @@ const ButtonsCar = styled.div`
   }
 `;
 const DetailOfBuy = styled.div`
-  margin-top: 20px;
+  margin-top: 30px;
   margin-bottom: 40px;
 
   h6 {

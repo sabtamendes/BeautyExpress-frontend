@@ -288,6 +288,7 @@ const DescriptionProduct = styled.div`
   gap: 10px;
   h1 {
     font-weight: bold;
+    font-size: 16px;
   }
   h2 {
     font-size: 12px;
@@ -310,6 +311,10 @@ const IconAddCar = styled.div`
   display: flex;
   justify-content: center;
   color: ${secondaryText};
+
+  ion-icon{
+    width: 25px;
+  }
 `;
 
 const ContainerFoot = styled.div`
