@@ -8,9 +8,11 @@ import {
 } from "../constants/colors.js";
 
 import { useState, useEffect } from "react";
+import { BASE_URL } from "../constants/urls.js";
+import axios from "axios";
 
 export default function Products() {
-  const [listProducts, setProducts] = useState([]);
+  const [listProducts, setListProducts] = useState([]);
 
   const [categorys, setCategorys] = useState([]);
 
@@ -21,9 +23,35 @@ export default function Products() {
     showCategorys();
   }, []);
 
-  async function showProducts() {}
+  async function showProducts(category, productName) {
+    try {
+      await axios
+        .get(`${BASE_URL}/products`, { params: { category, productName } })
+        .then((response) => {
+          const { data } = response;
+          setListProducts(data);
+        })
+        .catch((error) => alert(error.message));
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }
 
-  async function showCategorys() {}
+  async function showCategorys() {
+    try {
+      await axios
+        .get(`${BASE_URL}/categorys`)
+        .then((response) => {
+          const { data } = response;
+          setCategorys(data);
+        })
+        .catch((error) => alert(error.message));
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }
 
   return (
     <>
