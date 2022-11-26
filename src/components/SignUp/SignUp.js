@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { postSignUp } from "../../services/Services";
+import swal from "sweetalert2";
+
 
 export default function SignUp() {
     const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -17,12 +19,49 @@ export default function SignUp() {
     function handleSubmit(e) {
         e.preventDefault();
         const body = { ...form }
-
+        if (form.password.length < 6) {
+            return swal.fire({
+                title: 'A senha deve ter pelo menos 6 dígitos!',
+                icon: 'error',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            })
+        }
         postSignUp(body)
             .then(res => {
                 navigate("/");
             })
-
+            .catch((err) => {
+                console.log(err.response)
+                if (err.response.data.message === "Este Email já está em uso!") {
+                    return swal.fire({
+                        title: 'Este Email já está em uso!',
+                        icon: 'error',
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    })
+                }
+                if (err.response.data.includes('"email" must be a valid email')) {
+                    return swal.fire({
+                        title: 'Digite um email válido!',
+                        icon: 'error',
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    })
+                }
+            })
     }
     return (
         <Container >

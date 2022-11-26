@@ -15,8 +15,8 @@ import { estaLogado } from "../constants/auth.js";
 import UserContext from "../contexts/UserContext.js";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { IoLogOutSharp } from "react-icons/io5";
-import { loggingOut } from "../services/Services.js";
-import swal from "sweetalert";
+// import { loggingOut } from "../services/Services.js";
+// import swal from "sweetalert";
 
 export default function Products() {
   const [listProducts, setListProducts] = useState([]);
@@ -126,21 +126,21 @@ export default function Products() {
     localStorage.setItem("cart", JSON.stringify(carUpdate));
   }
 
-  function logout() {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${user.token}`
-      }
-    }
+  // function logout() {
+  //   const config = {
+  //     headers: {
+  //       Authorization: `Bearer ${user.token}`
+  //     }
+  //   }
 
-    loggingOut(config)
-      .then(() => {
-        localStorage.removeItem("token");
-        //dá um refresh na página
-      }).catch((err) => {
-        swal.fire("Algo deu errado ao tentar desconectar da conta!", "error")
-      })
-  }
+  //   loggingOut(config)
+  //     .then(() => {
+  //       localStorage.removeItem("token");
+  //       //dá um refresh na página
+  //     }).catch((err) => {
+  //       swal.fire("Algo deu errado ao tentar desconectar da conta!", "error")
+  //     })
+  // }
   return (
     <>
       <Container>
@@ -241,7 +241,7 @@ export default function Products() {
           </ItemFoot>
           :
           <ItemFoot to="/" show={true}>
-            <IoLogOutSharp size="30px" color="#818A89" onClick={() => logout()} />
+            <IoLogOutSharp size="30px" color="#818A89" onClick={() => window.location.reload()} />
             <p>Logout</p>
           </ItemFoot>
         }
