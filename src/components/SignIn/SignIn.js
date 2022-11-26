@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { postSignIn } from "../../services/Services";
 import UserContext from "../../contexts/UserContext";
-
+import swal from "sweetalert2";
+import 'animate.css';
 export default function SignIn() {
 
     const [form, setForm] = useState({ email: "", password: "" });
@@ -25,17 +26,21 @@ export default function SignIn() {
         postSignIn(body)
             .then(res => {
                 setUser(res.data);
-                console.log(res.data)
                 navigate("/pagamento");
-                //se quiser finalizar a compra vai pra tela de pagamento
-
             })
 
             .catch(err => {
-                console.error(err);
-
+                swal.fire({
+                    title: 'Email ou senhas incorretos!',
+                    icon:'error',
+                    showClass: {
+                      popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                      popup: 'animate__animated animate__fadeOutUp'
+                    }
+                  })
             });
-        console.log(form)
     }
     return (
         <Container >
