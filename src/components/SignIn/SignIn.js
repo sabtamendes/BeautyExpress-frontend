@@ -28,18 +28,17 @@ export default function SignIn() {
                 setUser(res.data);
                 navigate("/pagamento");
             })
-
             .catch(err => {
                 swal.fire({
                     title: 'Email ou senhas incorretos!',
-                    icon:'error',
+                    icon: 'error',
                     showClass: {
-                      popup: 'animate__animated animate__fadeInDown'
+                        popup: 'animate__animated animate__fadeInDown'
                     },
                     hideClass: {
-                      popup: 'animate__animated animate__fadeOutUp'
+                        popup: 'animate__animated animate__fadeOutUp'
                     }
-                  })
+                })
             });
     }
     return (
