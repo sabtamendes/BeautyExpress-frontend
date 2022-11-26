@@ -7,16 +7,23 @@ import {
   priceLabel,
 } from "../constants/colors.js";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { BASE_URL } from "../constants/urls.js";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { estaLogado } from "../constants/auth.js";
+import UserContext from "../contexts/UserContext.js";
+import { IoNotificationsOutline } from "react-icons/io5";
+import { IoLogOutSharp } from "react-icons/io5";
+import { loggingOut } from "../services/Services.js";
+import swal from "sweetalert";
 
 export default function Products() {
   const [listProducts, setListProducts] = useState([]);
 
   const [categorys, setCategorys] = useState([]);
+
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     showProducts();
@@ -119,10 +126,31 @@ export default function Products() {
     localStorage.setItem("cart", JSON.stringify(carUpdate));
   }
 
+  function logout() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      }
+    }
+
+    loggingOut(config)
+      .then(() => {
+        localStorage.removeItem("token");
+        //dá um refresh na página
+      }).catch((err) => {
+        swal.fire("Algo deu errado ao tentar desconectar da conta!", "error")
+      })
+  }
   return (
     <>
       <Container>
-        <Title>Beauty Express</Title>
+        {user === undefined || estaLogado === undefined
+          ? <Title>Beauty Express</Title>
+          : <UserTitle>
+            <p>Olá, {user.name}</p>
+            <IoNotificationsOutline />
+          </UserTitle>
+        }
         {/* <h2>Makes para torcer pelo Brasil</h2> */}
         <SearchProducts>
           <IconSearch>
@@ -205,15 +233,22 @@ export default function Products() {
           <p>Home</p>
         </ItemFoot>
 
-        <ItemFoot to="/login" show={true}>
-          <ion-icon name="person" size="large"></ion-icon>
-          <p>Login</p>
-        </ItemFoot>
+        {user === undefined || estaLogado === undefined
+          ?
+          <ItemFoot to="/login" show={true}>
+            <ion-icon name="person" size="large"></ion-icon>
+            <p>Login</p>
+          </ItemFoot>
+          :
+          <ItemFoot to="/" show={true}>
+            <IoLogOutSharp size="30px" color="#818A89" onClick={() => logout()} />
+            <p>Logout</p>
+          </ItemFoot>
+        }
       </ContainerFoot>
     </>
   );
 }
-
 const Container = styled.div`
   min-height: 100vh;
   /* width: 100%; */
@@ -223,7 +258,6 @@ const Container = styled.div`
 	flex-direction: column;  */
   margin-bottom: 60px;
 `;
-
 const Title = styled.h1`
   display: flex;
   justify-content: center;
@@ -232,7 +266,17 @@ const Title = styled.h1`
   color: #171f1e;
   margin-bottom: 15px;
 `;
-
+const UserTitle = styled.h1`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #171f1e;
+  margin-bottom: 15px;
+ p{
+  font-size: 20px;
+  color: #000000;
+ } 
+`;
 const SearchProducts = styled.div`
   display: flex;
   width: 100%;
@@ -250,7 +294,6 @@ const SearchProducts = styled.div`
     font-size: 20px;
   }
 `;
-
 const IconSearch = styled.div`
   width: 40px;
   text-align: left;
@@ -261,7 +304,6 @@ const IconSearch = styled.div`
     cursor: pointer;
   }
 `;
-
 const Categorys = styled.div`
   /* width: 100%; */
   margin-top: 20px;
@@ -289,7 +331,6 @@ const Categorys = styled.div`
     color: ${labelColor};
   }
 `;
-
 const ContainerProducts = styled.div`
   width: 100%;
   display: flex;
@@ -299,7 +340,6 @@ const ContainerProducts = styled.div`
   background-color: none;
   justify-content: center;
 `;
-
 const ProductNotice = styled.div`
   border-radius: 5px;
   background-color: white;
@@ -310,13 +350,11 @@ const ProductNotice = styled.div`
     height: 150px;
   }
 `;
-
 const TitleNotice = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
 `;
-
 const DescriptionProduct = styled.div`
   width: 100px;
   display: flex;
@@ -342,7 +380,6 @@ const DescriptionProduct = styled.div`
     font-style: italic;
   }
 `;
-
 const IconAddCar = styled.div`
   cursor: pointer;
   display: flex;
@@ -353,7 +390,6 @@ const IconAddCar = styled.div`
     width: 25px;
   }
 `;
-
 const ContainerFoot = styled.div`
   position: fixed;
   bottom: 0;
@@ -365,7 +401,6 @@ const ContainerFoot = styled.div`
   flex-direction: row;
   justify-content: space-between;
 `;
-
 const ItemFoot = styled(Link)`
   display: ${(props) => (props.show ? "flex" : "none")};
   flex-direction: column;
@@ -376,7 +411,6 @@ const ItemFoot = styled(Link)`
     font-size: 12px;
     color: ${secondaryText};
   }
-
   ion-icon {
     color: ${secondaryText};
     cursor: pointer;

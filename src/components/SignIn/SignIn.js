@@ -25,7 +25,10 @@ export default function SignIn() {
         postSignIn(body)
             .then(res => {
                 setUser(res.data);
-                navigate("/home");
+                console.log(res.data)
+                navigate("/pagamento");
+                //se quiser finalizar a compra vai pra tela de pagamento
+
             })
 
             .catch(err => {

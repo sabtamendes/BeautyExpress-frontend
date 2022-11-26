@@ -1,4 +1,3 @@
-/*Sabta*/
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./assets/styles/GlobalStyles";
 import { useState } from "react";
@@ -7,22 +6,28 @@ import SignIn from "./components/SignIn/SignIn";
 import SignUp from "./components/SignUp/SignUp";
 import ProductsPage from "./pages/ProductsPage.js";
 import CarPage from "./pages/CarPage.js";
+import Payment from "./components/Payment/Payment";
+import CartContext from "./contexts/CartContext";
 
 function App() {
   const [user, setUser] = useState(undefined);
+  const [payment, setPayment] = useState(0);
+  const [sales, setSales] = useState([]);
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      <Router>
-        <GlobalStyle />
-        <Routes>
-          <Route path="/" element={<ProductsPage />} />
-          <Route path="/cart" element={<CarPage />}></Route>
-          <Route path="/login" element={<SignIn />} />
-          <Route path="/cadastro" element={<SignUp />} />
-        </Routes>
-      </Router>
+    <UserContext.Provider value={{ user, setUser , sales, setSales}}>
+      <CartContext.Provider value={{ payment, setPayment }}>
+        <Router>
+          <GlobalStyle />
+          <Routes>
+            <Route path="/" element={<ProductsPage />} />
+            <Route path="/cart" element={<CarPage />} />
+            <Route path="/login" element={<SignIn />} />
+            <Route path="/cadastro" element={<SignUp />} />
+            <Route path="/pagamento" element={<Payment />} />
+          </Routes>
+        </Router>
+      </CartContext.Provider>
     </UserContext.Provider>
   );
 }
-
 export default App;

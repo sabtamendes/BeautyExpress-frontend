@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import {
@@ -12,6 +12,9 @@ import { Link } from "react-router-dom";
 import { estaLogado } from "../constants/auth.js";
 import axios from "axios";
 import { BASE_URL } from "../constants/urls.js";
+import UserContext from "../contexts/UserContext";
+import CartContext from "../contexts/CartContext";
+
 
 export default function CarPage() {
   const [car, setCar] = useState(
@@ -23,6 +26,12 @@ export default function CarPage() {
     calculetTotRequest();
   });
 
+  const { user, setSales } = useContext(UserContext);
+
+  const {setPayment} = useContext(CartContext);
+
+ 
+
   async function addOrRemoveOfCar(indexProduct, quantity) {
     let newCar = [...car];
     const newQuantify = newCar[indexProduct].quantity + quantity;
@@ -33,6 +42,7 @@ export default function CarPage() {
       newCar[indexProduct].quantity = newQuantify;
     } else return;
     setCar(newCar);
+    setSales(newCar);
     localStorage.setItem("cart", JSON.stringify(newCar));
     calculetTotRequest();
 
@@ -76,6 +86,7 @@ export default function CarPage() {
       .map((c) => c.quantity * c.unitaryValue)
       .reduce((accumulator, item) => accumulator + item, 0);
     setTotalBuy(total);
+    setPayment(total);
   }
 
   function cleanCar() {
@@ -147,7 +158,17 @@ export default function CarPage() {
           </ItenDetail>
         </DetailOfBuy>
         <ContainerFoot>
-          <ContainerButton>Finalizar compra</ContainerButton>
+          {
+            user === undefined || estaLogado === undefined
+              ?
+              <Link to="/login" >
+                <ContainerButton>Finalizar compra</ContainerButton>
+              </Link>
+              :
+              <Link to="/pagamento" >
+                <ContainerButton>Finalizar compra</ContainerButton>
+              </Link>
+          }
         </ContainerFoot>
       </Container>
     </>
@@ -166,7 +187,6 @@ const Container = styled.div`
   background-color: ${screenColor};
   margin-bottom: 60px;
 `;
-
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
@@ -178,7 +198,6 @@ const Top = styled.div`
     font-size: 20px;
   }
 `;
-
 const ListCar = styled.div`
   display: flex;
   flex-direction: column;
@@ -187,7 +206,6 @@ const ListCar = styled.div`
   gap: 10px;
   margin-top: 20px;
 `;
-
 const ItenCar = styled.div`
   display: flex;
   gap: 10px;
@@ -218,7 +236,6 @@ const DescriptionIten = styled.div`
     color: ${priceLabel};
   }
 `;
-
 const ButtonsCar = styled.div`
   display: flex;
   align-items: center;
@@ -260,11 +277,9 @@ const ItenDetail = styled.div`
     color: ${priceLabel};
   }
 `;
-
 const ContainerFoot = styled.div`
   margin-top: 20px;
 `;
-
 const ContainerButton = styled.button`
   letter-spacing: 1px;
   font-size: 16px;
