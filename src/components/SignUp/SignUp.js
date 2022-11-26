@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { postSignUp } from "../../services/Services";
 
 export default function SignUp() {
-    const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+    const [form, setForm] = useState({ name: "", email: "", password: "" });
 
     const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ export default function SignUp() {
                 />
                 <button type="submit">Cadastrar</button>
 
-                <StyleLink to={"/"}>
+                <StyleLink to={"/login"}>
                     <span>Já tem uma conta?</span> <i>Entre agora!</i>
                 </StyleLink>
             </Form>
