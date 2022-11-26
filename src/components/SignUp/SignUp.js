@@ -36,7 +36,6 @@ export default function SignUp() {
                 navigate("/");
             })
             .catch((err) => {
-                console.log(err.response)
                 if (err.response.data.message === "Este Email já está em uso!") {
                     return swal.fire({
                         title: 'Este Email já está em uso!',

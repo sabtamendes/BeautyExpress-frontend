@@ -8,7 +8,6 @@ import {
     labelColor,
 } from "../../constants/colors";
 
-
 import credicard from "../../assets/images/credicard.png";
 import applepay from "../../assets/images/applepay.png";
 import paypal from "../../assets/images/paypal.png";
@@ -21,19 +20,23 @@ export default function Payment() {
 
     const { payment } = useContext(CartContext);
     const { user } = useContext(UserContext);
-    const [disabled, setDisabled]= useState(false);
+    const [disabled, setDisabled] = useState(false);
 
     const navigate = useNavigate();
+
+
     function sweetAlert() {
-        swal.fire(user.name, "Sua compra foi realizada com sucesso!", "success");
-        setTimeout(navigate("/"), 10000)
-        if(disabled){
+
+        swal.fire(user.name, 
+            "Sua compra foi realizada com sucesso!", 
+            "success");
+        setTimeout(navigate("/"), 10000);
+
+        if (disabled) {
             setDisabled(true);
             localStorage.removeItem("cart");
-            console.log(localStorage)
         }
     }
-//enviar pro back o item e stock pra diminuir no banco de dados 
 
     return (
         <Container>

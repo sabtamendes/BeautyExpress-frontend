@@ -8,7 +8,7 @@ import {
 } from "../constants/colors.js";
 
 import { useState, useEffect, useContext } from "react";
-import { BASE_URL } from "../constants/urls.js";
+//import { BASE_URL } from "../constants/urls.js";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { estaLogado } from "../constants/auth.js";
@@ -35,7 +35,7 @@ export default function Products() {
   async function showProducts(category, productName) {
     try {
       await axios
-        .get(`${BASE_URL}/products`, { params: { category, productName } })
+        .get(`${process.env.REACT_APP_API_BASE_URL}/products`, { params: { category, productName } })
         .then((response) => {
           const { data } = response;
           setListProducts(data);
@@ -50,7 +50,7 @@ export default function Products() {
   async function showCategorys() {
     try {
       await axios
-        .get(`${BASE_URL}/categorys`)
+        .get(`${process.env.REACT_APP_API_BASE_URL}/categorys`)
         .then((response) => {
           const { data } = response;
           setCategorys(data);
@@ -78,7 +78,6 @@ export default function Products() {
         carUpdate = car.map((p) => {
           if (p._id === product._id) {
             if (product.stock >= p.quantity + 1) {
-              console.log("adicionei mais 1");
               return { ...p, quantity: p.quantity + 1 };
             } else {
               return p;
@@ -93,10 +92,8 @@ export default function Products() {
     }
 
     if (estaLogado) {
-      //console.log('estou logado')
       try {
         const user = JSON.parse(localStorage.getItem("user"));
-        // console.log("user =", user);
         const iduser = user._id;
         const dia = Intl.NumberFormat({ minimumIntegerDigits: 2 }).format(
           new Date().getDate()
@@ -104,7 +101,7 @@ export default function Products() {
         const mes = Intl.NumberFormat({ minimumIntegerDigits: 2 }).format(
           new Date().getMonth() + 1
         );
-        await axios.post(`${BASE_URL}/sales-order`, {
+        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/sales-order`, {
           iduser,
           date: `${dia}/${mes}/${new Date().getFullYear()}`,
           paymentType: "n",

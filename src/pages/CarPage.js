@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import { estaLogado } from "../constants/auth.js";
 import axios from "axios";
-import { BASE_URL } from "../constants/urls.js";
+//import { BASE_URL } from "../constants/urls.js";
 import UserContext from "../contexts/UserContext";
 import CartContext from "../contexts/CartContext";
 
@@ -47,10 +47,8 @@ export default function CarPage() {
     calculetTotRequest();
 
     if (estaLogado) {
-      console.log("estou logado");
       try {
         const user = JSON.parse(localStorage.getItem("user"));
-        console.log("user =", user);
         const iduser = user._id;
         const dia = Intl.NumberFormat({ minimumIntegerDigits: 2 }).format(
           new Date().getDate()
@@ -58,13 +56,12 @@ export default function CarPage() {
         const mes = Intl.NumberFormat({ minimumIntegerDigits: 2 }).format(
           new Date().getMonth() + 1
         );
-        await axios.post(`${BASE_URL}/sales-order`, {
+        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/sales-order`, {
           iduser,
           date: `${dia}/${mes}/${new Date().getFullYear()}`,
           paymentType: "n",
           status: "P",
           productsList: newCar.map((c) => {
-            console.log("c._id", c._id);
             return {
               idProduct: c._id,
               quantity: c.quantity,
