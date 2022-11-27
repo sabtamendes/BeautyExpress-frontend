@@ -5,6 +5,11 @@ import { postSignIn } from "../../services/Services";
 import UserContext from "../../contexts/UserContext";
 import swal from "sweetalert2";
 import 'animate.css';
+import {
+    btnColor,
+    screenColor
+  } from "../../constants/colors";
+
 export default function SignIn() {
 
     const [form, setForm] = useState({ email: "", password: "" });
@@ -61,7 +66,7 @@ export default function SignIn() {
                 />
 
 
-                <label>Password</label>
+                <label>Senha</label>
 
                 <input
                     name="password"
@@ -84,14 +89,16 @@ export default function SignIn() {
 const Container = styled.div`
 width: 100%;
 height: 100vh;
-background-color: #FFFFFFF;
+background-color: ${screenColor};
 padding: 15%;
+padding-left: 11%;
 `
 const Title = styled.h1`
 display:flex;
 justify-content:center;
 align-items:center;
-font-size: 32px;
+font-family: 'El Messiri', sans-serif;
+font-size: 36px;
 color: #171F1E;
 margin-bottom: 15px;
 `
@@ -99,40 +106,46 @@ const Subtitle = styled.h6`
 display:flex;
 justify-content:center;
 align-items:center;
-font-size: 13px;
+font-size: 14px;
 color: #F4BD90;
-font-weight: 600;
+font-weight: bold;
+font-family: 'Open Sans', sans-serif;
+color: ${btnColor};
 `
 const Form = styled.form`
 display:flex;
 flex-direction:column;
 justify-content: space-between;
-margin-top: 15vh;
+margin-top: 14vh;
+font-family: 'Open Sans', sans-serif;
 label{
     color: #171F1E;
     font-size: 18px;
     margin-bottom: 8px;
+    margin-left: 6px;
 }
 button{
     align-items: center;
-    background-color: #0C8A7C;
+    background-color: ${btnColor};
     color: #FFFFFF;
     border-radius: 10px;
     border:none;
-    width: 70.1vw;
+    margin-top: 15%;
+    width: 78.1vw;
     height: 45px; 
 }
 input{
-    width: 70.1vw;
-    height: 45px;
+    width: 78.1vw;
+    height: 48px;
     margin-bottom: 20px;
-    background-color: #F9F9F9;
+    background-color: #c7f9cc;
     border:none;
+    border-radius: 10px;
+    padding-left: 8px;
     &::placeholder{
-    font-family: 'Raleway', sans-serif;
     font-size:16px;
     font-weight: 500;
-    color: #989F9D;
+    color: #fffff;
     }
 }
 `
@@ -144,9 +157,9 @@ display: flex;
 justify-content:center;
 span{
     color: #989F9D;
+    margin-right: 5px;
 }
 i{
     color: #171F1E;
 }
-
 `

@@ -11,7 +11,6 @@ import {
 import { Link } from "react-router-dom";
 import { estaLogado } from "../constants/auth.js";
 import axios from "axios";
-//import { BASE_URL } from "../constants/urls.js";
 import UserContext from "../contexts/UserContext";
 import CartContext from "../contexts/CartContext";
 
@@ -26,11 +25,8 @@ export default function CarPage() {
     calculetTotRequest();
   });
 
-  const { user, setSales } = useContext(UserContext);
-
-  const {setPayment} = useContext(CartContext);
-
- 
+  const { user } = useContext(UserContext);
+  const { setPayment, setSales, sales } = useContext(CartContext);
 
   async function addOrRemoveOfCar(indexProduct, quantity) {
     let newCar = [...car];
@@ -88,7 +84,7 @@ export default function CarPage() {
 
   function cleanCar() {
     localStorage.removeItem("cart");
-    setCar([]);
+    setCar("");
   }
 
   return (
@@ -98,7 +94,7 @@ export default function CarPage() {
           <Link to="/">
             <ion-icon name="arrow-back-circle-outline" size="large"></ion-icon>
           </Link>
-          <p>Shopping</p>
+          <p>Carrinho</p>
           <ion-icon
             name="trash-outline"
             size="large"
@@ -116,12 +112,12 @@ export default function CarPage() {
                       {c.productName}
                       <p>{c.category}</p>
                     </h1>
-                    <h3>
+                    <h6>
                       {Intl.NumberFormat("pt-br", {
                         style: "currency",
                         currency: "BRL",
                       }).format(c.unitaryValue)}
-                    </h3>
+                    </h6>
                   </DescriptionIten>
                   <ButtonsCar>
                     <ion-icon
@@ -155,17 +151,17 @@ export default function CarPage() {
           </ItenDetail>
         </DetailOfBuy>
         <ContainerFoot>
-          {
-            user === undefined || estaLogado === undefined
-              ?
-              <Link to="/login" >
-                <ContainerButton>Finalizar compra</ContainerButton>
-              </Link>
-              :
-              <Link to="/pagamento" >
-                <ContainerButton>Finalizar compra</ContainerButton>
-              </Link>
+          {sales.length === 0 ? "" : user === undefined || estaLogado === undefined
+            ?
+            <Link to="/conectar" >
+              <ContainerButton>Finalizar Pedido</ContainerButton>
+            </Link>
+            :
+            <Link to="/pagamento" >
+              <ContainerButton>Finalizar Pedido</ContainerButton>
+            </Link>
           }
+
         </ContainerFoot>
       </Container>
     </>
@@ -192,7 +188,8 @@ const Top = styled.div`
     color: ${secondaryText};
   }
   p {
-    font-size: 20px;
+    font-size: 25px;
+    font-family: 'Open Sans', sans-serif;
   }
 `;
 const ListCar = styled.div`
@@ -213,6 +210,7 @@ const ItenCar = styled.div`
     width: 100px;
     height: 100px;
     border-radius: 10px;
+    object-fit: cover;
   }
 `;
 const DescriptionIten = styled.div`
@@ -223,13 +221,18 @@ const DescriptionIten = styled.div`
   h1 {
     font-size: 16px;
     font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
     p {
-      font-size: 14px;
+      font-size: 18px;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: bold;
       color: ${secondaryText};
     }
   }
-  h3 {
-    margin-top: 10px;
+  h6 {
+    font-family: 'Open Sans', sans-serif;
+    margin-top: 8px;
+    font-size: 16.5px;
     color: ${priceLabel};
   }
 `;
@@ -253,7 +256,7 @@ const ButtonsCar = styled.div`
 const DetailOfBuy = styled.div`
   margin-top: 30px;
   margin-bottom: 40px;
-
+  font-family: 'Open Sans', sans-serif;
   h6 {
     font-size: 20px;
     font-weight: bold;
@@ -265,6 +268,7 @@ const ItenDetail = styled.div`
   display: flex;
   justify-content: space-between;
   font-weight: bold;
+  font-family: 'Open Sans', sans-serif;
   h1 {
     font-size: 18px;
     color: ${secondaryText};
@@ -280,7 +284,9 @@ const ContainerFoot = styled.div`
 const ContainerButton = styled.button`
   letter-spacing: 1px;
   font-size: 16px;
+  font-weight: bold;
   width: 100%;
+  font-family: 'Open Sans', sans-serif;
   background-color: ${btnColor};
   color: ${labelColor};
   padding: 15px;

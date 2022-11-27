@@ -17,24 +17,43 @@ import swal from "sweetalert2";
 import UserContext from "../../contexts/UserContext";
 
 export default function Payment() {
-
     const { payment } = useContext(CartContext);
     const { user } = useContext(UserContext);
     const [disabled, setDisabled] = useState(false);
-
+    const [card, setCard] = useState("");
     const navigate = useNavigate();
+    const [credicardCheck, setCredicarCheck] = useState(false);
+    const [applepayCheck, setApplePayCheck] = useState(false)
+    const [paypalCheck, setPayPalCheck] = useState(false)
+    const { setSales } = useContext(CartContext);
 
 
-    function sweetAlert() {
+    function handleSubmit(e) {
+        e.preventDefault();
 
-        swal.fire(user.name, 
-            "Sua compra foi realizada com sucesso!", 
-            "success");
-        setTimeout(navigate("/"), 10000);
-
-        if (disabled) {
+        if (!credicardCheck && !applepayCheck && !paypalCheck) {
+            return swal.fire({
+                title: user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase()),
+                text: "Selecione uma forma de pagamento válida!", type: "error"
+            });
+        }
+        else if (credicardCheck && applepayCheck && paypalCheck) {
+            return swal.fire({
+                title: user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase()),
+                text: 'Selecione apenas uma forma de pagamento!', icon: 'error'
+            });
+        } else if (credicardCheck && applepayCheck) {
+            return swal.fire({
+                title: user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase()),
+                text: 'Selecione apenas uma forma de pagamento!', icon: 'error'
+            });
+        } else {
+            swal.fire({
+                title: user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase()),
+                text: 'Compra realizada com sucesso!', icon: 'success'
+            });
             setDisabled(true);
-            localStorage.removeItem("cart");
+            setTimeout(() => {navigate("/")}, 3000);
         }
     }
 
@@ -44,51 +63,58 @@ export default function Payment() {
                 <Link to="/">
                     <ion-icon name="arrow-back-circle-outline" size="large"></ion-icon>
                 </Link>
-                <h1>Pagamento</h1>
+                <h1>Formas de Pagamento</h1>
             </Top>
 
-            <AddressContainer>
-                <Address>
-                    <input type="radio" />
-                    <Text>
-                        <p>Casa</p>
-                        <span> 92  99321-1628</span>
-                        <span>Rua Manaus 55</span>
-                    </Text>
-                </Address>
-                <Address>
-                    <input type="radio" />
-                    <Text>
-                        <p>Trabalho</p>
-                        <span> 31  99322-1625</span>
-                        <span>Rua Manaus 55</span>
-                    </Text>
-                </Address>
-            </AddressContainer>
-
-            <PaymentMethod>
+            <PaymentMethod onSubmit={handleSubmit}>
                 <Box>
                     <img src={credicard} alt="credicard logo" />
                     <span>Credi Card</span>
-                    <input type="radio" />
+                    <input
+                        onClick={() => setCredicarCheck(!credicardCheck)}
+                        type="radio"
+                        value="credicard"
+                        onChange={(e) => setCard(e.target.value)}
+                        disabled={disabled}
+                        checked={credicardCheck}
+                    />
                 </Box>
                 <Box>
                     <img src={applepay} alt="applepay logo" />
-                    <span>Paypal</span>
-                    <input type="radio" />
+                    <span>Apple Pay</span>
+                    <input
+                        onClick={() => setApplePayCheck(!applepayCheck)}
+                        type="radio"
+                        value="applepay"
+                        onChange={(e) => setCard(e.target.value)}
+                        disabled={disabled}
+                        checked={applepayCheck}
+                    />
                 </Box>
                 <Box>
                     <img src={paypal} alt="paypal logo" />
-                    <span>Apple Pay</span>
-                    <input type="radio" />
+                    <span>Pay Pal</span>
+                    <input
+                        onClick={() => setPayPalCheck(!paypalCheck)}
+                        type="radio"
+                        value="paypal"
+                        onChange={(e) => setCard(e.target.value)}
+                        disabled={disabled}
+                        checked={paypalCheck}
+                    />
                 </Box>
+
+                <Total>
+                    <p>Total</p> <span>R$ {payment.toFixed(2).replace(".", ",")}</span>
+                </Total>
+
+                {payment === ""
+                    ? ""
+                    : <Button onClick={() => setSales("")} disabled={disabled} type="submit">Finalizar Compra</Button>
+                }
 
             </PaymentMethod>
 
-            <Total>
-                <p>Total</p> <span>R$ {payment.toFixed(2).replace(".", ",")}</span>
-            </Total>
-            <Button onClick={sweetAlert} disabled={disabled}>Finalizar Pedido</Button>
         </Container>
     )
 }
@@ -107,35 +133,15 @@ const Top = styled.div`
   }
   h1 {
     font-size: 20px;
-    margin-right: 27vw;
+    margin-right: 22vw;
   }
 `
-const AddressContainer = styled.div`
-display:flex;
-flex-direction: column;
-margin-top: 5vh;
-margin-left: 10px;
-`
-const Address = styled.div`
-display:flex;
-margin-top: 25px;
-input{
-    margin-top: 2px;
-    margin-right: 4vw;
-}
-`
-const Text = styled.div`
-display:flex;
-flex-direction: column;
-span{
-    font-size: 18px;
-    color: ${secondaryText};
-  }
-`
-const PaymentMethod = styled.div`
+const PaymentMethod = styled.form`
 margin-top: 10vh;
 img{
     width: 35px;
+    height: auto;
+    object-fit: cover;
 }
 `
 const Box = styled.div`
@@ -149,6 +155,9 @@ span{
 }
 input{
     margin-top: -4px;
+    background-color: ${props => props === true ? "green" : "gray"
+    }
+
 }
 `
 const Total = styled.div`
@@ -167,7 +176,8 @@ span{
 `
 const Button = styled.button`
 margin-top: 35px;
-font-size: 20px;
+letter-spacing: 1px;
+font-size: 16px;
 background-color: ${btnColor};
 color: ${labelColor};
 width: 85vw;
