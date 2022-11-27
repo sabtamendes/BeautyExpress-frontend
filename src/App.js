@@ -12,16 +12,17 @@ import CartContext from "./contexts/CartContext";
 function App() {
   const [user, setUser] = useState(undefined);
   const [payment, setPayment] = useState(0);
-  const [sales, setSales] = useState([]);
+  const [sales, setSales] = useState("");
+
   return (
-    <UserContext.Provider value={{ user, setUser , sales, setSales}}>
-      <CartContext.Provider value={{ payment, setPayment }}>
+    <UserContext.Provider value={{ user, setUser }}>
+      <CartContext.Provider value={{ payment, setPayment, sales, setSales }}>
         <Router>
           <GlobalStyle />
           <Routes>
             <Route path="/" element={<ProductsPage />} />
-            <Route path="/cart" element={<CarPage />} />
-            <Route path="/login" element={<SignIn />} />
+            <Route path="/carrinho" element={<CarPage />} />
+            <Route path="/conectar" element={<SignIn />} />
             <Route path="/cadastro" element={<SignUp />} />
             <Route path="/pagamento" element={<Payment />} />
           </Routes>

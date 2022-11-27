@@ -8,15 +8,14 @@ import {
 } from "../constants/colors.js";
 
 import { useState, useEffect, useContext } from "react";
-//import { BASE_URL } from "../constants/urls.js";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { estaLogado } from "../constants/auth.js";
 import UserContext from "../contexts/UserContext.js";
-import { IoNotificationsOutline } from "react-icons/io5";
+import { IoNotificationsSharp } from "react-icons/io5";
 import { IoLogOutSharp } from "react-icons/io5";
+import CartContext from "../contexts/CartContext.js";
 // import { loggingOut } from "../services/Services.js";
-// import swal from "sweetalert";
 
 export default function Products() {
   const [listProducts, setListProducts] = useState([]);
@@ -24,6 +23,8 @@ export default function Products() {
   const [categorys, setCategorys] = useState([]);
 
   const { user } = useContext(UserContext);
+
+  const { setSales } = useContext(CartContext);
 
   useEffect(() => {
     showProducts();
@@ -88,6 +89,7 @@ export default function Products() {
         });
       } else {
         carUpdate = [...carUpdate, { ...product, quantity: 1 }];
+        setSales(...carUpdate);
       }
     }
 
@@ -121,6 +123,7 @@ export default function Products() {
     }
 
     localStorage.setItem("cart", JSON.stringify(carUpdate));
+    setSales(...carUpdate);
   }
 
   // function logout() {
@@ -144,8 +147,8 @@ export default function Products() {
         {user === undefined || estaLogado === undefined
           ? <Title>Beauty Express</Title>
           : <UserTitle>
-            <p>Olá, {user.name}</p>
-            <IoNotificationsOutline />
+            <p>Olá, {user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase())}</p>
+            <IoNotificationsSharp size="28px" color="#818A89" />
           </UserTitle>
         }
         {/* <h2>Makes para torcer pelo Brasil</h2> */}
@@ -156,6 +159,7 @@ export default function Products() {
 
           <input
             type="text"
+            placeholder="Procurar"
             onChange={(e) => showProducts(null, e.target.value)}
           />
         </SearchProducts>
@@ -179,7 +183,7 @@ export default function Products() {
         </Categorys>
 
         <ContainerProducts>
-          {listProducts.map((p) => {
+          {listProducts.map((p, i) => {
             return (
               <div key={p._id}>
                 <ProductNotice productFinished={p.stock === 0}>
@@ -220,7 +224,7 @@ export default function Products() {
         </ContainerProducts>
       </Container>
       <ContainerFoot>
-        <ItemFoot to="/cart" show={true}>
+        <ItemFoot to="/carrinho" show={true}>
           <ion-icon name="cart" size="large"></ion-icon>
           <p>Carrinho</p>
         </ItemFoot>
@@ -232,7 +236,7 @@ export default function Products() {
 
         {user === undefined || estaLogado === undefined
           ?
-          <ItemFoot to="/login" show={true}>
+          <ItemFoot to="/conectar" show={true}>
             <ion-icon name="person" size="large"></ion-icon>
             <p>Login</p>
           </ItemFoot>
@@ -259,8 +263,12 @@ const Title = styled.h1`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 15px;
+  right: 15%;
   font-size: 32px;
-  color: #171f1e;
+  font-weight:600;
+  font-family: 'El Messiri', sans-serif;
+  color: ${btnColor};
   margin-bottom: 15px;
 `;
 const UserTitle = styled.h1`
@@ -270,25 +278,31 @@ const UserTitle = styled.h1`
   color: #171f1e;
   margin-bottom: 15px;
  p{
-  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 25px;
   color: #000000;
  } 
 `;
 const SearchProducts = styled.div`
   display: flex;
   width: 100%;
-  border: 1px;
   border-color: transparent;
-  border-radius: 3px;
+  border-radius: 50px;
   margin-top: 20px;
   background-color: white;
   padding: 10px 0px 10px 0px;
-
+  box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
+  -webkit-box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
+  -moz-box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
   input {
     border: none;
     outline: 0;
     border-color: transparent;
     font-size: 20px;
+    ::placeholder{
+      font-size: 16px;
+      font-family: 'Open Sans', sans-serif;
+    }
   }
 `;
 const IconSearch = styled.div`
@@ -340,11 +354,15 @@ const ContainerProducts = styled.div`
 const ProductNotice = styled.div`
   border-radius: 5px;
   background-color: white;
-  padding: 20px;
+  padding: 13px;
+  box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
+  -webkit-box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
+  -moz-box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
   img {
     opacity: ${(props) => (props.productFinished ? 0.2 : 1)};
     width: 150px;
     height: 150px;
+    object-fit: cover;
   }
 `;
 const TitleNotice = styled.div`
@@ -361,6 +379,7 @@ const DescriptionProduct = styled.div`
   h1 {
     font-weight: bold;
     font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
   }
   h2 {
     font-size: 12px;
@@ -390,9 +409,13 @@ const IconAddCar = styled.div`
 const ContainerFoot = styled.div`
   position: fixed;
   bottom: 0;
+  z-index:2;
   width: 100%;
   background-color: #ffffff;
   padding: 10px;
+  box-shadow: 1px 2px 11px -7px rgba(0,0,0,0.79);
+  -webkit-box-shadow: 1px 2px 11px -7px rgba(0,0,0,0.79);
+  -moz-box-shadow: 1px 2px 11px -7px rgba(0,0,0,0.79);
 
   display: flex;
   flex-direction: row;
@@ -406,6 +429,7 @@ const ItemFoot = styled(Link)`
   text-decoration: none;
   p {
     font-size: 12px;
+    font-family: 'Open Sans', sans-serif;
     color: ${secondaryText};
   }
   ion-icon {

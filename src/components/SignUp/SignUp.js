@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { postSignUp } from "../../services/Services";
 import swal from "sweetalert2";
-
+import { btnColor, screenColor } from "../../constants/colors";
 
 export default function SignUp() {
     const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -78,7 +78,7 @@ export default function SignUp() {
                     value={form.name}
                     onChange={handleForm}
                     type="text"
-                    placeholder="Digite o seu Nome"
+                    placeholder="Insira o seu Nome"
                     required
                 />
 
@@ -90,24 +90,24 @@ export default function SignUp() {
                     value={form.email}
                     onChange={handleForm}
                     type="text"
-                    placeholder="Digite o seu Email"
+                    placeholder="Insira o Email"
                     required
                 />
 
 
-                <label>Password</label>
+                <label>Senha</label>
 
                 <input
                     name="password"
                     value={form.password}
                     onChange={handleForm}
                     type="number"
-                    placeholder="Digite a sua Senha"
+                    placeholder="Insira o Senha"
                     required
                 />
                 <button type="submit">Cadastrar</button>
 
-                <StyleLink to={"/login"}>
+                <StyleLink to={"/conectar"}>
                     <span>Já tem uma conta?</span> <i>Entre agora!</i>
                 </StyleLink>
             </Form>
@@ -120,53 +120,62 @@ width: 100%;
 height: 100vh;
 background-color: #FFFFFFF;
 padding: 15%;
+padding-left: 11%;
+background-color: ${screenColor};
 `
 const Title = styled.h1`
 display:flex;
 justify-content:center;
 align-items:center;
-font-size: 32px;
+font-size: 36px;
 color: #171F1E;
+font-family: 'El Messiri', sans-serif;
 margin-bottom: 15px;
 `
 const Subtitle = styled.h6`
 display:flex;
 justify-content:center;
 align-items:center;
-font-size: 13px;
+font-size: 14px;
 color: #F4BD90;
-font-weight: 600;
+font-weight: bold;
+font-family: 'Open Sans', sans-serif;
+color: ${btnColor};
 `
 const Form = styled.form`
 display:flex;
 flex-direction:column;
 justify-content: space-between;
-margin-top: 15vh;
+margin-top: 10vh;
+font-family: 'Open Sans', sans-serif;
 label{
     color: #171F1E;
     font-size: 18px;
     margin-bottom: 8px;
+    margin-left: 6px;
 }
 button{
     align-items: center;
-    background-color: #0C8A7C;
+    background-color: ${btnColor};
     color: #FFFFFF;
     border-radius: 10px;
     border:none;
-    width: 70.1vw;
+    margin-top: 15%;
+    width: 78.1vw;
     height: 45px; 
 }
 input{
-    width: 70.1vw;
-    height: 45px;
+    width: 78.1vw;
+    height: 48px;
     margin-bottom: 20px;
-    background-color: #F9F9F9;
+    border-radius: 10px;
+    background-color: #c7f9cc;
     border:none;
+    padding-left: 8px;
     &::placeholder{
-    font-family: 'Raleway', sans-serif;
     font-size:16px;
     font-weight: 500;
-    color: #989F9D;
+    color: #fffff;
     }
 }
 `
@@ -174,6 +183,7 @@ const StyleLink = styled(Link)`
 text-decoration: none;
 margin-top: 8vh;
 font-size: 18px;
+margin-left: 16px;
 span{
     color: #989F9D;
 }
