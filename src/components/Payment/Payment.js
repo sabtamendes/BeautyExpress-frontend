@@ -15,6 +15,7 @@ import CartContext from "../../contexts/CartContext";
 import { useContext, useState } from "react";
 import swal from "sweetalert2";
 import UserContext from "../../contexts/UserContext";
+import { postPurchaseCart } from "../../services/Services";
 
 export default function Payment() {
     const { payment } = useContext(CartContext);
@@ -24,12 +25,10 @@ export default function Payment() {
     const navigate = useNavigate();
     const [credicardCheck, setCredicarCheck] = useState(false);
     const [applepayCheck, setApplePayCheck] = useState(false)
-    const [paypalCheck, setPayPalCheck] = useState(false)
-    const { setSales } = useContext(CartContext);
+    const [paypalCheck, setPayPalCheck] = useState(false);
 
 
-    function handleSubmit(e) {
-        e.preventDefault();
+    function handleSubmit() {
 
         if (!credicardCheck && !applepayCheck && !paypalCheck) {
             return swal.fire({
@@ -47,14 +46,35 @@ export default function Payment() {
                 title: user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase()),
                 text: 'Selecione apenas uma forma de pagamento!', icon: 'error'
             });
-        } else {
-            swal.fire({
-                title: user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase()),
-                text: 'Compra realizada com sucesso!', icon: 'success'
-            });
-            setDisabled(true);
-            setTimeout(() => {navigate("/")}, 3000);
-        }
+        } 
+        purchaseFiniched()
+    }
+
+    function purchaseFiniched() {
+     
+        const cart = JSON.parse(localStorage.getItem("cart"));
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${user.token}`
+            }
+        };
+
+        const body = { ...cart, card }
+        console.log(body, "body")
+        postPurchaseCart(body, config)
+            .then((res) => {
+                console.log(res.data.message)
+                swal.fire({
+                    title: user.name.replace(/(^\w{1})|(\s+\w{1})/g, letra => letra.toUpperCase()),
+                    text: 'Compra realizada com sucesso!', icon: 'success'
+                });
+                setTimeout(() => { navigate("/") }, 3000);
+                setDisabled(true);
+            })
+            .catch((err) => {
+                console.error(err.response)
+            })
     }
 
     return (
@@ -66,14 +86,14 @@ export default function Payment() {
                 <h1>Formas de Pagamento</h1>
             </Top>
 
-            <PaymentMethod onSubmit={handleSubmit}>
+            <PaymentMethod>
                 <Box>
                     <img src={credicard} alt="credicard logo" />
-                    <span>Credi Card</span>
+                    <span>Credito</span>
                     <input
                         onClick={() => setCredicarCheck(!credicardCheck)}
                         type="radio"
-                        value="credicard"
+                        value="credito"
                         onChange={(e) => setCard(e.target.value)}
                         disabled={disabled}
                         checked={credicardCheck}
@@ -81,11 +101,11 @@ export default function Payment() {
                 </Box>
                 <Box>
                     <img src={applepay} alt="applepay logo" />
-                    <span>Apple Pay</span>
+                    <span>Debito</span>
                     <input
                         onClick={() => setApplePayCheck(!applepayCheck)}
                         type="radio"
-                        value="applepay"
+                        value="debito"
                         onChange={(e) => setCard(e.target.value)}
                         disabled={disabled}
                         checked={applepayCheck}
@@ -93,11 +113,11 @@ export default function Payment() {
                 </Box>
                 <Box>
                     <img src={paypal} alt="paypal logo" />
-                    <span>Pay Pal</span>
+                    <span>Boleto</span>
                     <input
                         onClick={() => setPayPalCheck(!paypalCheck)}
                         type="radio"
-                        value="paypal"
+                        value="boleto"
                         onChange={(e) => setCard(e.target.value)}
                         disabled={disabled}
                         checked={paypalCheck}
@@ -110,7 +130,7 @@ export default function Payment() {
 
                 {payment === ""
                     ? ""
-                    : <Button onClick={() => setSales("")} disabled={disabled} type="submit">Finalizar Compra</Button>
+                    : <Button onClick={handleSubmit} disabled={disabled}>Finalizar Compra</Button>
                 }
 
             </PaymentMethod>
@@ -136,7 +156,7 @@ const Top = styled.div`
     margin-right: 22vw;
   }
 `
-const PaymentMethod = styled.form`
+const PaymentMethod = styled.div`
 margin-top: 10vh;
 img{
     width: 35px;

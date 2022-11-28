@@ -297,6 +297,7 @@ const SearchProducts = styled.div`
   input {
     border: none;
     outline: 0;
+    width: auto;
     border-color: transparent;
     font-size: 20px;
     ::placeholder{
@@ -326,14 +327,17 @@ const Categorys = styled.div`
   font-size: 12px;
 
   button {
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 10px;
     border: none;
     background-color: #ffffff;
-    color: #c6c6c6;
+    color: #818A89;
     font-size: 12px;
-    font-family: "Arial";
+    font-family: 'Open Sans', sans-serif;
     letter-spacing: 1px;
+    box-shadow: 9px 3px 21px -1px rgba(219,207,207,0.84);
+    -webkit-box-shadow: 9px 3px 21px -1px rgba(219,207,207,0.84);
+    -moz-box-shadow: 9px 3px 21px -1px rgba(219,207,207,0.84);
   }
 
   button:active,
