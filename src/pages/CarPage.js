@@ -15,6 +15,7 @@ import UserContext from "../contexts/UserContext";
 import CartContext from "../contexts/CartContext";
 
 
+
 export default function CarPage() {
   const [car, setCar] = useState(
     JSON.parse(localStorage.getItem("cart")) || []
@@ -26,7 +27,7 @@ export default function CarPage() {
   });
 
   const { user } = useContext(UserContext);
-  const { setPayment, setSales, sales } = useContext(CartContext);
+  const { setPayment, setSales } = useContext(CartContext);
 
   async function addOrRemoveOfCar(indexProduct, quantity) {
     let newCar = [...car];
@@ -151,13 +152,13 @@ export default function CarPage() {
           </ItenDetail>
         </DetailOfBuy>
         <ContainerFoot>
-          {sales.length === 0 ? "" : user === undefined || estaLogado === undefined
+          {car.length === 0 ? "" : user === undefined || estaLogado === undefined
             ?
             <Link to="/conectar" >
               <ContainerButton>Finalizar Pedido</ContainerButton>
             </Link>
             :
-            <Link to="/pagamento" >
+            <Link to="/pagamento">
               <ContainerButton>Finalizar Pedido</ContainerButton>
             </Link>
           }
