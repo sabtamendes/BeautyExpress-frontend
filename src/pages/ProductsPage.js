@@ -15,7 +15,8 @@ import UserContext from "../contexts/UserContext.js";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { IoLogOutSharp } from "react-icons/io5";
 import CartContext from "../contexts/CartContext.js";
-// import { loggingOut } from "../services/Services.js";
+import swal from "sweetalert2";
+import { loggingOut } from "../services/Services.js";
 
 export default function Products() {
   const [listProducts, setListProducts] = useState([]);
@@ -126,21 +127,23 @@ export default function Products() {
     setSales(...carUpdate);
   }
 
-  // function logout() {
-  //   const config = {
-  //     headers: {
-  //       Authorization: `Bearer ${user.token}`
-  //     }
-  //   }
+  function logout() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      }
+    }
 
-  //   loggingOut(config)
-  //     .then(() => {
-  //       localStorage.removeItem("token");
-  //       //dá um refresh na página
-  //     }).catch((err) => {
-  //       swal.fire("Algo deu errado ao tentar desconectar da conta!", "error")
-  //     })
-  // }
+    loggingOut(config)
+      .then(() => {
+        localStorage.removeItem("token");
+        setTimeout(window.location.reload(), 0);
+      }).catch((err) => {
+        console.error(err.response);
+        return swal.fire({text:"Algo deu errado ao tentar desconectar da conta!",icon: "error"})
+      })
+  }
+  //() => window.location.reload()
   return (
     <>
       <Container>
@@ -242,7 +245,7 @@ export default function Products() {
           </ItemFoot>
           :
           <ItemFoot to="/" show={true}>
-            <IoLogOutSharp size="30px" color="#818A89" onClick={() => window.location.reload()} />
+            <IoLogOutSharp size="30px" color="#818A89" onClick={logout} />
             <p>Logout</p>
           </ItemFoot>
         }
@@ -296,8 +299,9 @@ const SearchProducts = styled.div`
   -moz-box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
   input {
     border: none;
+    margin-right: 15px;
     outline: 0;
-    width: auto;
+    width: 80%;
     border-color: transparent;
     font-size: 20px;
     ::placeholder{
@@ -317,7 +321,6 @@ const IconSearch = styled.div`
   }
 `;
 const Categorys = styled.div`
-  /* width: 100%; */
   margin-top: 20px;
   display: flex;
   gap: 10px;
@@ -325,7 +328,6 @@ const Categorys = styled.div`
   justify-content: center;
   font-family: "Roboto";
   font-size: 12px;
-
   button {
     border-radius: 5px;
     padding: 10px;
@@ -335,9 +337,9 @@ const Categorys = styled.div`
     font-size: 12px;
     font-family: 'Open Sans', sans-serif;
     letter-spacing: 1px;
-    box-shadow: 9px 3px 21px -1px rgba(219,207,207,0.84);
-    -webkit-box-shadow: 9px 3px 21px -1px rgba(219,207,207,0.84);
-    -moz-box-shadow: 9px 3px 21px -1px rgba(219,207,207,0.84);
+    box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
+    -webkit-box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
+    -moz-box-shadow: 1px 3px 15px -7px rgba(0,0,0,0.79);
   }
 
   button:active,
